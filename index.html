@@ -864,7 +864,7 @@
   </div>
   <p class="splash-subtitle">|| Shri Ganeshay Namah ||</p>
   <h1 class="splash-title">Yashika <em>&</em> Mukul</h1>
-  <button class="btn-view" onclick="document.getElementById('splash').classList.add('hidden')">View Invitation</button>
+  <button class="btn-view" onclick="document.getElementById('splash').classList.add('hidden'); startMusic();">View Invitation ♪</button>
 </div>
 
 <!-- HERO -->
@@ -1652,6 +1652,13 @@ window.onYouTubeIframeAPIReady = function() {
       playsinline: 1
     },
     events: {
+      onReady: function() {
+        // If splash was already dismissed before player loaded, start playing
+        if (window._startMusicOnReady) {
+          ytPlayer.setVolume(60);
+          ytPlayer.playVideo();
+        }
+      },
       onStateChange: function(e) {
         if (e.data === YT.PlayerState.PLAYING) {
           isPlaying = true;
@@ -1668,6 +1675,16 @@ window.onYouTubeIframeAPIReady = function() {
     }
   });
 };
+
+function startMusic() {
+  if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+    ytPlayer.setVolume(60);
+    ytPlayer.playVideo();
+  } else {
+    // Player not ready yet — flag it to start once ready
+    window._startMusicOnReady = true;
+  }
+}
 
 function toggleMusic() {
   if (!ytPlayer) return;
